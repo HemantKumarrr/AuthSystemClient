@@ -1,16 +1,36 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Loader from '../Loader/Loader';
 import { useState } from 'react';
 
 const Singup = () => {
-    const [userData, setUserData] = useState({ username, email, password });
+    const [userData, setUserData] = useState({ username: '', email: '', password: '' });
     const [isLoader, setIsLoader] = useState(false);
-    
-    const handleSignUp = (e)=> {
+    const [isError, setIsError] = useState('');
+    const navigate = useNavigate();
+
+    const handleSignUp = async (e)=> {
       e.preventDefault();
+      
+      if( userData.username === '' || userData.email === '' || userData.password === '') return setIsError('fill all the fields');
+
       setIsLoader(true);
-      console.log(userData);
-      setIsLoader(false);
+      try {
+        const data = await fetch('http://localhost:5000/signup', {
+          method: 'POST',
+          headers: { 'Content-Type' : 'application/json' },
+          body: JSON.stringify(userData)
+        });
+        const response = await data.json();
+        if(!response.authToken) { 
+          setIsLoader(false)
+          return setIsError(response.password);
+        }
+        localStorage.setItem("auth", JSON.stringify(response));
+        setIsLoader(false);
+        navigate('/profile')
+      } catch (err) {
+        console.log(err)
+      }
     }
 
   return (
@@ -19,6 +39,9 @@ const Singup = () => {
         <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Sign Up</h2>
           <form className="flex flex-col" >
+            {
+              isError && <p className='text-black mb-4 px-2 py-1 rounded-md bg-red-400 border-2 border-red-600' >{isError}</p>
+            }
             <input
               type="text"
               className="bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
