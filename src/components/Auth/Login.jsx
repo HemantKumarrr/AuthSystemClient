@@ -1,15 +1,33 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Loader from '../Loader/Loader';
 import { useState } from "react";
 
 const Login = () => {
     const [userData, setUserData] = useState({ email: '', password: '' });
     const [isLoader, setIsLoader] = useState(false);
+    const [isError, setIsError] = useState('');
+    const navigate = useNavigate();
 
-    const handleLogin = (e)=> {
+    const handleLogin = async (e)=> {
       e.preventDefault();
       setIsLoader(true);
-      console.log(userData);
+      try {
+        const data = await fetch('http://localhost:5000/login', {
+          method: 'POST',
+          body: JSON.stringify(userData),
+          headers: { 'Content-Type': 'application/json'}
+        })
+        let response = await data.json();
+        if(!response.authToken) {
+          setIsError(response.error);
+          setIsLoader(false);
+        } else { 
+          localStorage.setItem("auth", JSON.stringify(response));
+          navigate('/profile')
+        }
+      } catch (err) {
+        console.error(err)
+      }
       setIsLoader(false);
     }
 
@@ -19,6 +37,9 @@ const Login = () => {
         <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Login</h2>
           <form className="flex flex-col">
+            {
+              isError && <p className='text-black mb-4 px-2 py-1 rounded-md bg-red-400 border-2 border-red-600' >{isError}</p>
+            }
             <input
               type="email"
               className="bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"

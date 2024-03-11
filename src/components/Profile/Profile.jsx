@@ -1,25 +1,78 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserDataContext }  from '../../Context/UserContext'
 
 const Profile = () => {
   const [editToggle, setEditToggle] = useState(false);
   const [toogleText, setToggleText] = useState("Edit");
+  const [isLoading, setIsLoading] = useState(false)
+  const { user, setUser } = useContext(UserDataContext);
   const navigate = useNavigate();
-  const [userData, setUserData] = useState({
-    username: "John Doe",
-    email: "john@gmail.com",
-  });
+  const auth = JSON.parse(localStorage.getItem("auth"))
+  const [userName, setUserName] = useState('');
 
-  const handleEditToggle = () => {
+  const getUser = async ()=> {
+    try {
+      setIsLoading(true)
+      const data = await fetch(`http://localhost:5000/profile/${auth.uid}`, {
+        method: 'GET',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': auth.authToken
+        }
+      })
+      const response = await data.json();
+      setUser(response)
+      setIsLoading(false)
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  useEffect(()=> {
+    getUser();
+  }, [toogleText])
+
+  const handleEditToggle = async () => {
     setEditToggle((prev) => !prev);
     if (toogleText === "Edit") setToggleText("Save");
-    if (toogleText === "Save") setToggleText("Edit");
+    if (toogleText === "Save") {
+      try {
+        const data = await fetch(`http://localhost:5000/profile/${auth.uid}`, {
+          method: 'PUT',
+          body: JSON.stringify({ username: userName }),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': auth.authToken
+          }
+        })
+      } catch (err) {
+        console.error(err);
+      }
+      setToggleText("Edit");
+    }
   };
 
   // Logout
   const handleLogout = ()=> {
     localStorage.clear();
     navigate('/login');
+  }
+
+  // Account Delete
+  const handleDeleteAcc = async ()=> {
+    try {
+      const data = await fetch(`http://localhost:5000/profile/${auth.uid}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': auth.authToken
+        }
+      })
+      navigate('/signup');
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   return (
@@ -38,7 +91,7 @@ const Profile = () => {
               <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
             </svg>
             <figcaption className="sr-only">
-              {userData.username}, Web Developer
+              {userName}, Web Developer
             </figcaption>
           </figure>
           {editToggle ? (
@@ -49,15 +102,18 @@ const Profile = () => {
                 placeholder="Your name"
                 autoFocus
                 onChange={(e) =>
-                  setUserData({ ...userData, username: e.target.value })
+                  setUserName(e.target.value)
                 }
-                value={userData.username}
+                value={userName}
               />
             </div>
           ) : (
-            <h2 className="mt-8 mb-1 text-xl font-bold text-indigo-600 dark:text-indigo-400">
-              {userData.username}
-            </h2>
+              isLoading ?
+              <div className="text-xl"> Loading...</div>
+              :
+              <h2 className="mt-8 mb-1 text-xl font-bold text-indigo-600 dark:text-indigo-400">
+                {user.username}
+              </h2>
           )}
           <button
             className="px-5 py-1 mb-4 mt-2 bg-green-600 rounded-lg"
@@ -66,10 +122,10 @@ const Profile = () => {
             {toogleText}
           </button>
           <p className="mb-4 text-gray-600 dark:text-gray-300">
-            {userData.email}
+            {user.email}
           </p>
           <div className="mt-8 sm:px-20 flex items-center justify-between sm:flex-row flex-col-reverse gap-4">
-            <button className="inline-flex items-center px-4 py-2 bg-zinc-800 transition ease-in-out delay-75 hover:bg-zinc-900 text-white text-sm font-medium rounded-md hover:-translate-y-1 hover:scale-110">
+            <button onClick={handleDeleteAcc} className="inline-flex items-center px-4 py-2 bg-zinc-800 transition ease-in-out delay-75 hover:bg-zinc-900 text-white text-sm font-medium rounded-md hover:-translate-y-1 hover:scale-110">
               <svg
                 stroke="currentColor"
                 viewBox="0 0 24 24"

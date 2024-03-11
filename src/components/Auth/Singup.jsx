@@ -5,7 +5,8 @@ import { useState } from 'react';
 const Singup = () => {
     const [userData, setUserData] = useState({ username: '', email: '', password: '' });
     const [isLoader, setIsLoader] = useState(false);
-    const [isError, setIsError] = useState('');
+    const [isEmailError, setIsEmailError] = useState('');
+    const [isPasswordError, setIsPasswordError] = useState('');
     const navigate = useNavigate();
 
     const handleSignUp = async (e)=> {
@@ -23,11 +24,14 @@ const Singup = () => {
         const response = await data.json();
         if(!response.authToken) { 
           setIsLoader(false)
-          return setIsError(response.password);
+          if(response.email) return setIsEmailError(response.email);
+          if(response.password) return setIsPasswordError(response.password);
+          
+        } else {
+          localStorage.setItem("auth", JSON.stringify(response));
+          setIsLoader(false);
+          navigate('/profile')
         }
-        localStorage.setItem("auth", JSON.stringify(response));
-        setIsLoader(false);
-        navigate('/profile')
       } catch (err) {
         console.log(err)
       }
@@ -39,9 +43,6 @@ const Singup = () => {
         <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Sign Up</h2>
           <form className="flex flex-col" >
-            {
-              isError && <p className='text-black mb-4 px-2 py-1 rounded-md bg-red-400 border-2 border-red-600' >{isError}</p>
-            }
             <input
               type="text"
               className="bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
@@ -57,6 +58,9 @@ const Singup = () => {
               onChange={(e)=> setUserData({...userData, email: e.target.value})}
               value={userData.email}
             />
+            {
+              isEmailError && <p className='text-red-600' >{isEmailError}</p>
+            }
             <input
               type="password"
               className="bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
@@ -64,6 +68,9 @@ const Singup = () => {
               onChange={(e)=> setUserData({...userData, password: e.target.value})}
               value={userData.password}
             />
+            {
+              isPasswordError && <p className='text-red-600' >{isPasswordError}</p>
+            }
             <div className="flex items-center justify-between flex-wrap">
               <label
                 htmlFor="remember-me"
