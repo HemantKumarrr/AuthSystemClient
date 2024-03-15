@@ -5,6 +5,8 @@ import Singup from './components/Auth/Singup'
 import Login from './components/Auth/Login'
 import Profile from './components/Profile/Profile'
 import UserContext from './Context/UserContext'
+import Private from './components/Private/Private'
+import OTP from './components/Auth/OTP'
 
 function App() {
 
@@ -16,7 +18,10 @@ function App() {
             <Route path='/' element={ <Singup /> } />
             <Route path='/signup' element={ <Singup /> } />
             <Route path='/login' element={ <Login /> } />
-            <Route path='/profile' element={ <Profile />} />
+            <Route path='/login/otp' element={ <OTP /> } />
+            <Route element={<Private />} >
+              <Route path='/profile' element={ <Profile />} />
+            </Route>
             <Route path='*' element={ <Page404 />} />
           </Routes>
         </Router>

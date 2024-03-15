@@ -8,22 +8,23 @@ const Login = () => {
     const [isError, setIsError] = useState('');
     const navigate = useNavigate();
 
-    const handleLogin = async (e)=> {
+    const handleLoginOTP = async (e)=> {
       e.preventDefault();
+      if( userData.email === '' || userData.password === '') return setIsError("fill all fileds")
+      
       setIsLoader(true);
       try {
-        const data = await fetch('http://localhost:5000/login', {
+        const data = await fetch('http://localhost:5000/sendotp', {
           method: 'POST',
-          body: JSON.stringify(userData),
+          body: JSON.stringify({email: userData.email}),
           headers: { 'Content-Type': 'application/json'}
         })
         let response = await data.json();
-        if(!response.authToken) {
+        if(!response.message) {
           setIsError(response.error);
           setIsLoader(false);
         } else { 
-          localStorage.setItem("auth", JSON.stringify(response));
-          navigate('/profile')
+          navigate('/login/otp', { state: userData })
         }
       } catch (err) {
         console.error(err)
@@ -89,7 +90,7 @@ const Login = () => {
               <button
                 type="submit"
                 className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-indigo-600 hover:to-blue-600 transition ease-in-out duration-150"
-                onClick={handleLogin}
+                onClick={handleLoginOTP}
               >
                 Login
               </button>

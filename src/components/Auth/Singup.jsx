@@ -7,6 +7,8 @@ const Singup = () => {
     const [isLoader, setIsLoader] = useState(false);
     const [isEmailError, setIsEmailError] = useState('');
     const [isPasswordError, setIsPasswordError] = useState('');
+    const [showHideToggle, setShowHideToggle] = useState(false)
+    const [passwordType, setPasswordType] = useState('password');
     const navigate = useNavigate();
 
     const handleSignUp = async (e)=> {
@@ -37,6 +39,14 @@ const Singup = () => {
       }
     }
 
+    // Show Hide password Toggle
+    const handleShowHideToggle = ()=> {
+      setShowHideToggle((prev)=> !prev);
+      if(passwordType === 'password') return setPasswordType('text');
+      if(passwordType === 'text') return setPasswordType('password');
+      
+    }
+
   return (
     <>
       <div className="flex flex-col items-center justify-center h-screen">
@@ -61,13 +71,25 @@ const Singup = () => {
             {
               isEmailError && <p className='text-red-600' >{isEmailError}</p>
             }
+            <div className="w-full relative">
             <input
-              type="password"
-              className="bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
+              type={passwordType}
+              className="w-full bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
               placeholder="Password"
               onChange={(e)=> setUserData({...userData, password: e.target.value})}
               value={userData.password}
             />
+            {
+              showHideToggle ?
+              <div onClick={handleShowHideToggle} className="text-black bg-zinc-300 p-2 rounded-r-md cursor-pointer absolute top-0 right-0">
+                Hide
+              </div>
+              :
+              <div onClick={handleShowHideToggle} className="text-black bg-zinc-300 p-2 rounded-r-md cursor-pointer absolute top-0 right-0">
+                Show
+              </div>
+            }
+            </div>
             {
               isPasswordError && <p className='text-red-600' >{isPasswordError}</p>
             }
