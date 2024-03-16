@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
-  const [isSentMail, setIsSentMail] = useState(true);
+  const [isSentMail, setIsSentMail] = useState(false);
   const [isError, setIsError] = useState("");
   const navigate = useNavigate();
 
@@ -20,8 +20,7 @@ const ForgotPassword = () => {
       );
       const response = await data.json();
       if (response.message === "Check your mail") return setIsSentMail(true);
-      if (response.message === "no user found")
-        return setIsError(response.message);
+      if (response.message === "no user found") return setIsError(response.message);
     } catch (err) {
       console.error(err);
     }

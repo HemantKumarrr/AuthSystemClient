@@ -64,12 +64,12 @@ const Login = () => {
                 <input type="checkbox" id="remember-me" className="mr-2" />
                 Remember me
               </label>
-              <a
-                href="#"
+              <Link
+                to='/login/forgot-password'
                 className="text-sm text-blue-500 hover:underline mb-0.5"
               >
                 Forgot password?
-              </a>
+              </Link>
               <p className="text-gray-900 mt-4">
                 {" "}
                 Don't have an account?{" "}
