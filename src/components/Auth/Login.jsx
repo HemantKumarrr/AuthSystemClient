@@ -14,7 +14,7 @@ const Login = () => {
       
       setIsLoader(true);
       try {
-        const data = await fetch('http://localhost:5000/sendotp', {
+        const data = await fetch('https://authsystemserver.onrender.com/sendotp', {
           method: 'POST',
           body: JSON.stringify({email: userData.email}),
           headers: { 'Content-Type': 'application/json'}

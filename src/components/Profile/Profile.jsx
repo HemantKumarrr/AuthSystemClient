@@ -14,7 +14,7 @@ const Profile = () => {
   const getUser = async ()=> {
     try {
       setIsLoading(true)
-      const data = await fetch(`http://localhost:5000/profile/${auth.uid}`, {
+      const data = await fetch(`https://authsystemserver.onrender.com/profile/${auth.uid}`, {
         method: 'GET',
         headers: { 
           'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ const Profile = () => {
     if (toogleText === "Edit") setToggleText("Save");
     if (toogleText === "Save") {
       try {
-        const data = await fetch(`http://localhost:5000/profile/${auth.uid}`, {
+        const data = await fetch(`https://authsystemserver.onrender.com/profile/${auth.uid}`, {
           method: 'PUT',
           body: JSON.stringify({ username: userName }),
           headers: {
@@ -62,7 +62,7 @@ const Profile = () => {
   // Account Delete
   const handleDeleteAcc = async ()=> {
     try {
-      const data = await fetch(`http://localhost:5000/profile/${auth.uid}`, {
+      const data = await fetch(`https://authsystemserver.onrender.com/profile/${auth.uid}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

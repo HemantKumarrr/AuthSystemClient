@@ -15,7 +15,7 @@ const OTP = () => {
       return setIsError("please enter 6 digit OTP");
     // setIsLoader(true);
     try {
-      const data = await fetch("http://localhost:5000/login", {
+      const data = await fetch("https://authsystemserver.onrender.com/login", {
         method: "POST",
         body: JSON.stringify({email, password, otp: otpData }),
         headers: { "Content-Type": "application/json" },

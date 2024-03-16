@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import Loader from '../Loader/Loader';
 import { useState } from 'react';
 
-const Singup = () => {
+const Signup = () => {
     const [userData, setUserData] = useState({ username: '', email: '', password: '' });
     const [isLoader, setIsLoader] = useState(false);
     const [isEmailError, setIsEmailError] = useState('');
@@ -18,7 +18,7 @@ const Singup = () => {
 
       setIsLoader(true);
       try {
-        const data = await fetch('http://localhost:5000/signup', {
+        const data = await fetch('https://authsystemserver.onrender.com/signup', {
           method: 'POST',
           headers: { 'Content-Type' : 'application/json' },
           body: JSON.stringify(userData)
@@ -139,4 +139,4 @@ const Singup = () => {
   )
 }
 
-export default Singup
+export default Signup
