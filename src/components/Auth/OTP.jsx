@@ -22,7 +22,7 @@ const OTP = () => {
       });
       let response = await data.json();
       if (!response.authToken) {
-        setIsError(response.error);
+        setIsError(response.message);
         // setIsLoader(false);
       } else {
         localStorage.setItem("auth", JSON.stringify(response));
@@ -53,6 +53,12 @@ const OTP = () => {
                     {" "}
                     OTP sent on this email{" " + " "+ email.slice(0,4) +"****" + "@gmail.com" } 
                   </label>
+                  {
+                    isError &&
+                    <div className="text-red-700 p-1 px-4 mb-2 bg-red-300 rounded-md">
+                      {isError}
+                    </div>
+                  }
                   <input
                     autoFocus
                     type="text"
