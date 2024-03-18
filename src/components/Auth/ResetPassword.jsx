@@ -1,15 +1,16 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isError, setIsError] = useState('');
-  const navigate = useNavigate();
 
   const handleReset = async (e) => {
     e.preventDefault();
-    const {id} = useParams();
+    const params = useParams();
+    const {id} = params;
+    console.log("This is id get from Params : "+id)
     if(password !== confirmPassword) return setIsError("Password doesn't match")
     try {
         const data = await fetch(`https://authsystemserver.onrender.com/reset-password/${id}`, {
