@@ -19,11 +19,12 @@ const ResetPassword = () => {
             credentials: 'include'
         });
         const response = await data.json();
-        if(response.message) return navigate('/login')
+        if(response.message) return alert('password changed successfully')
     } catch (err) {
       console.error(err);
     }
   };
+  
   return (
     <>
       <section className="w-2/3 m-auto mt-32">
