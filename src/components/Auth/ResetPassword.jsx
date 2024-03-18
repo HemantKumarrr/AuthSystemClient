@@ -1,20 +1,22 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
-  const [confirmPassord, setConfirmPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isError, setIsError] = useState('');
   const navigate = useNavigate();
 
   const handleReset = async (e) => {
     e.preventDefault();
-    if(passord !== confirmPassord) return setIsError("Password doesn't match")
+    const {id} = useParams();
+    if(password !== confirmPassword) return setIsError("Password doesn't match")
     try {
-        const data = await fetch('https://authsystemserver.onrender.com/reset-password', {
+        const data = await fetch(`https://authsystemserver.onrender.com/reset-password/${id}`, {
             method: 'POST',
-            body: JSON.stringify(password),
-            headers: {'Content-Type': 'application/json'}
+            body: JSON.stringify({password}),
+            headers: {'Content-Type': 'application/json'},
+            credentials: 'include'
         });
         const response = await data.json();
         if(response.message) return navigate('/login')
@@ -61,7 +63,7 @@ const ResetPassword = () => {
                     type="password"
                     placeholder="******"
                     onChange={(e)=> setConfirmPassword(e.target.value)}
-                    value={confirmPassord}
+                    value={confirmPassword}
                     className="block w-full px-6 py-3 text-black bg-white border border-gray-200 rounded-full appearance-none placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                   />
                 </div>

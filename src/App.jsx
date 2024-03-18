@@ -22,7 +22,7 @@ function App() {
             <Route path='/login' element={ <Login /> } />
             <Route path='/login/otp' element={ <OTP /> } />
             <Route path='/login/forgot-password' element={ <ForgotPassword /> } />
-            <Route path='/reset-password' element={ <ResetPassword /> } />
+            <Route path='/reset-password/:token' element={ <ResetPassword /> } />
             <Route element={<Private />} >
               <Route path='/profile' element={ <Profile />} />
             </Route>

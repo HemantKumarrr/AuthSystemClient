@@ -1,11 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [isSentMail, setIsSentMail] = useState(false);
   const [isError, setIsError] = useState("");
-  const navigate = useNavigate();
 
   const handleForgotPass = async (e) => {
     e.preventDefault();
@@ -14,8 +12,9 @@ const ForgotPassword = () => {
         "https://authsystemserver.onrender.com/login/forgot-password",
         {
           method: "POST",
-          body: JSON.stringify(email),
+          body: JSON.stringify({email}),
           headers: { "Content-Type": "application/json" },
+          credentials: 'include'
         }
       );
       const response = await data.json();
